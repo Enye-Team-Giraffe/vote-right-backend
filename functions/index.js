@@ -16,7 +16,7 @@ const ninAuthenticateRoute=require("./routes/authentication");
 
 // a function to tell us our program works
 app.use("/test",(request,response)=>{
-    response.end("welcome to vote right API ;)");
+    response.end("welcome to vote right API");
 })
 
 // a route which we will be using to authenticate API calls for NIN pending our approval
