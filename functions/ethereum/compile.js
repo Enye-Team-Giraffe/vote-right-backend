@@ -17,7 +17,7 @@ fs.ensureDirSync(buildPath)//make sure the path exists, and recreate it if it do
 // for each contract, save it to a file
 for (let contract in output){
     fs.outputJSONSync(
-        path.resolve(buildPath,contract + ".json"),
+        path.resolve(buildPath,contract.replace(":","") + ".json"),
         output[contract]
     );
 }
