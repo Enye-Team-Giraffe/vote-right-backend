@@ -1,49 +1,47 @@
-const assert= require("assert")
+// import the required packages
+const assert = require('assert');
+const ganache = require('ganache-cli');
+const Web3 = require("web3");
+const web3 = new Web3(ganache.provider());
+
+// import the contracts we have compliled
+const compiledFactory = require("../ethereum/build/ElectionFactory.json")
+const compiledElection = require("../ethereum/build/Election.json");
+
+// global variables to use throughout the tests
+let accounts;
+let factory;
+let electionAddress;
+let election;
+
+// global candidate to push
+const testCandidate={
+    id:"123453434",
+    name:"Shuaibu Alexander",
+    age:35,
+    party:"APC",
+    quote:"All hail the queen",
+    pictureLink:"123434",
+    education:"University"
+}
+
+// global voter to test
+const testVoter={
+    age:20,
+    gender:"MALE",
+    latlong:"1.2345_-11.5834",
+    phoneNumber:"09076299257",
+    candidateId:"241999"
+}
+// constants for gas price
+const smallGas = 1000000;
+const largeGas = 3000000;
+
 describe("working",()=>{
     it("working",()=>{
         assert.ok(true)
     })
 })
-// // import the required packages
-// const assert = require('assert');
-// const ganache = require('ganache-cli');
-// const Web3 = require("web3");
-// const web3 = new Web3(ganache.provider());
-
-// // import the contracts we have compliled
-// const compiledFactory = require("../ethereum/build/ElectionFactory.json")
-// const compiledElection = require("../ethereum/build/Election.json");
-
-// // global variables to use throughout the tests
-// let accounts;
-// let factory;
-// let electionAddress;
-// let election;
-
-// // global candidate to push
-// const testCandidate={
-//     id:"123453434",
-//     name:"Shuaibu Alexander",
-//     age:35,
-//     party:"APC",
-//     quote:"All hail the queen",
-//     pictureLink:"123434",
-//     education:"University"
-// }
-
-// // global voter to test
-// const testVoter={
-//     age:20,
-//     gender:"MALE",
-//     latlong:"1.2345_-11.5834",
-//     phoneNumber:"09076299257",
-//     candidateId:"241999"
-// }
-
-// // constants for gas price
-// const smallGas = 1000000;
-// const largeGas = 3000000;
-
 // // run tis code to deploy teh contract after each run
 // beforeEach(async ()=>{
 //     // get all the accounts provided by our local network
