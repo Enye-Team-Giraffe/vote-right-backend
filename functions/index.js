@@ -15,7 +15,7 @@ app.use(express.json())//enable us to be able to recieve json body from our app
 
 // import out routes
 const ninAuthenticateRoute=require("./routes/authentication");
-const adminRoute=require("./routes/admin")
+const adminRoute=require("./routes/election")
 
 // a function to tell us our program works
 app.use("/test",(request,response)=>{
@@ -26,7 +26,7 @@ app.use("/test",(request,response)=>{
 app.use("/authenticate",ninAuthenticateRoute);
 
 // a route for the admin section of our app
-app.use("/admin",adminRoute);
+app.use("/election",adminRoute);
 
 // deploy our instance
 exports.voteright=functions.https.onRequest(app);
