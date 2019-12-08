@@ -34,6 +34,14 @@ const testVoter={
     candidateId:"241999"
 }
 
+// globall election variables
+const testElection={
+    name:"presidential election",
+    description:"an election for president",
+    startdate:9009,
+    enddate:90099
+}
+
 // constants for gas price
 const smallGas = 1000000;
 const largeGas = 3000000;
@@ -42,14 +50,19 @@ const largeGas = 3000000;
 beforeEach(async ()=>{
     // get all the accounts provided by our local network
     accounts = await web3.eth.getAccounts();
+ 
     // deploy this contract and return an instance
     factory = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
                     .deploy({data:compiledFactory.bytecode})
                     .send({from:accounts[0],gas:largeGas})
     // create an election instance using the factory we just deployed
-    await factory.methods.createElection().send({
+    
+    await factory.methods.createElection(testElection['name'],testElection['description'],
+                                        testElection['startdate'],testElection['enddate']
+                                        )
+    .send({
         from:accounts[0],
-        gas:smallGas
+        gas:largeGas
     })
     // get the address of the first instances of our deployed elections
     address = await factory.methods.getDeployedElections().call()
@@ -68,6 +81,7 @@ describe("Elections",()=>{
     // test that both the factory and the election were sucessfully deployed to the network
     // by checking if they contain an address
     it("deploys a factory and a campaign ",()=>{
+        assert.ok(true)
         assert.ok(factory.options.address);
         assert.ok(election.options.address);
     });
