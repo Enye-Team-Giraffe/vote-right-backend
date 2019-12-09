@@ -3,16 +3,43 @@ pragma solidity ^0.4.17;
 // define a new factory which would be responsibel for deploying a new instance
 // of an election
 contract ElectionFactory{
-    address[] public deployedElections;
     
-    function createElection() public {
-        address newElection = new Election(msg.sender);
+    struct Summary{
+        address location;//the address of this newly deployed election
+        string name; //generated id for this candidate
+        string description; // the name of the candidate
+        uint startdate; //age of this candidate
+        uint enddate; //the party of this candidate
+    }
+    
+    address[] public deployedElections;
+    Summary[] public summaries;
+    
+    function createElection(string name,string description,uint startdate, uint enddate) public {
+        
+        address newElection = new Election(msg.sender,name,description,startdate,enddate);
+        
+        Summary memory newSummary = Summary({
+            location:newElection,
+            name:name,
+            description:description,
+            startdate:startdate,
+            enddate:enddate
+        });
+        
+        summaries.push(newSummary);
         deployedElections.push(newElection);
     }
     
     function getDeployedElections() public view returns(address[]){
         return deployedElections;
     }
+    
+    function electionsLength() public view returns(uint){
+        return summaries.length;
+    }
+    
+    
 }
 
 
@@ -64,6 +91,16 @@ contract Election {
     // create a function to keep track of the manager of this election
     address public manager;
     
+    // create descriptive details about the election
+    string  nameOfElection;
+    string  description;
+    uint  startdate;
+    uint enddate;
+    
+    // create a basic function that helps returns basic info about this election
+    function aboutElection() public view returns (string,string,uint,uint){
+        return (nameOfElection,description,startdate,enddate);
+    }
     //create a modifier which is going to secure certain functions 
     // so that they can only be run be the manager of the contract
     modifier restricted(){
@@ -74,8 +111,12 @@ contract Election {
     // create a function to initialise the election
     // this serves as a constrictor for this contract, and assigns a manager to this contract
     // also initialise the contract
-    function Election(address creator) public{
-        manager=creator ;
+    function Election(address creator,string electionName,string electionDescription,uint electionStartdate, uint electionEnddate) public{
+        manager=creator;
+        nameOfElection=electionName;
+        description=electionDescription;
+        startdate=electionStartdate;
+        enddate=electionEnddate;
         electionState=1;
     }
     
