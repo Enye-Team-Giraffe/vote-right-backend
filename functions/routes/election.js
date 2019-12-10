@@ -1,6 +1,7 @@
 var express=require("express");
 var router=express.Router();
 var electionFactory = require("../web3/electionFactory");
+const compiledElection = require("../ethereum/build/Election.json");
 var web3 = require("../web3/configuredWeb3");
 
 // define gas prices
@@ -81,6 +82,37 @@ router.post("/create",async (request,response)=>{
         });
     }
     
+})
+
+// a route to begin an election
+router.get("/begin/:electionId",async (request,response)=>{
+    // get the id of the election we want to begin
+    const electionAddress=request.params.electionId;
+    
+    // create my election in the blockchain
+    try{
+        // get all the accounts provided by our local network
+        accounts = await web3.eth.getAccounts();
+        // get an interface to the election contract
+        election = await new web3.eth.Contract(
+            JSON.parse(compiledElection.interface),
+            electionAddress
+        )
+        // get all the accounts provided by our local network
+        await election.methods.concludeInitialisation().send({from:accounts[0],gas:smallGas})
+        // respond with a sucessful message
+        return response.json({
+            status:"success",
+            data:"Election sucessfully initialised"
+        });
+    }
+    // if there
+    catch(err){
+        return response.json({
+            status:"error",
+            message:err.message
+        });
+    }
 })
 
 

@@ -46,62 +46,61 @@ router.get("/:electionId",async (request,response)=>{
 // route to add a candidate to our election
 router.post('/:electionId',async (request,response)=>{
     const electionAddress=request.params.electionId;
-    // get an interface to the election contract
-    election = await new web3.eth.Contract(
-        JSON.parse(compiledElection.interface),
-        electionAddress
-        )
-        
-        const newCandidate={};
-        const fields=['name','age','party','quote','pictureLink','education'];
-        
-        // check and make sure all the keys are present
-        for (let key of fields){
-            if (request.body[key] === undefined){
-                return response.json({
-                    status:"error",
-                    message:`the key ${key} was absent, please enter it`
-                });
-            }
-        }
-        
-        // assign the fields to an object
-        newCandidate['id']=uuidv4();
-        newCandidate[fields[0]]=request.body.name;
-        newCandidate[fields[1]]=request.body.age;
-        newCandidate[fields[2]]=request.body.party;
-        newCandidate[fields[3]]=request.body.quote;
-        newCandidate[fields[4]]=request.body.pictureLink;
-        newCandidate[fields[5]]=request.body.education;
-
-        // wrap all async calls in a try catch in case of errors
-        try{
-            // get all the accounts provided by our local network
-            accounts = await web3.eth.getAccounts();
-            // add a new candidate 
-            await election.methods.addCandidate(
-                newCandidate['id'],newCandidate['name'],
-                newCandidate['age'],newCandidate['party'],
-                newCandidate['quote'],newCandidate['pictureLink'],
-                newCandidate['education']
-            )
-            .send({from:accounts[0],gas:largeGas})
-
-            // respond with this candidate item
-            return response.json({
-                status:"success",
-                data:"you have sucessfully added the candidate"
-        });
-        }
-        // catch any errors
-        catch(err){
+    
+    const newCandidate={};
+    const fields=['name','age','party','quote','pictureLink','education'];
+    
+    // check and make sure all the keys are present
+    for (let key of fields){
+        if (request.body[key] === undefined){
             return response.json({
                 status:"error",
-                message:err.message
+                message:`the key ${key} was absent, please enter it`
             });
         }
+    }
+    
+    // assign the fields to an object
+    newCandidate['id']=uuidv4();
+    newCandidate[fields[0]]=request.body.name;
+    newCandidate[fields[1]]=request.body.age;
+    newCandidate[fields[2]]=request.body.party;
+    newCandidate[fields[3]]=request.body.quote;
+    newCandidate[fields[4]]=request.body.pictureLink;
+    newCandidate[fields[5]]=request.body.education;
+    
+    // wrap all async calls in a try catch in case of errors
+    try{
+        // get an interface to the election contract
+        election = await new web3.eth.Contract(
+            JSON.parse(compiledElection.interface),
+            electionAddress
+        )
+        // get all the accounts provided by our local network
+        accounts = await web3.eth.getAccounts();
+            // add a new candidate 
+        await election.methods.addCandidate(
+            newCandidate['id'],newCandidate['name'],
+            newCandidate['age'],newCandidate['party'],
+            newCandidate['quote'],newCandidate['pictureLink'],
+            newCandidate['education']
+        )
+        .send({from:accounts[0],gas:largeGas})
 
-    response.end("working")
+        // respond with this candidate item
+        return response.json({
+            status:"success",
+            data:"you have sucessfully added the candidate"
+        });
+    }
+    // catch any errors
+    catch(err){
+        return response.json({
+            status:"error",
+            message:err.message
+        });
+    }
+
 })
 
 
