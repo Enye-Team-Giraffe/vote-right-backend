@@ -4,7 +4,7 @@ var router=express.Router();
 // a route which we will be using to authenticate API calls for NIN pending our approval, it requires a post request to be activated
 router.post("/",(request,response)=>{
     // extract the phone number and NIN from the body of the response
-    const {nin,phoneNumber}=request.body;
+    const {nin,phoneNumber}=JSON.parse(request.body);
 
     // first check if the proper keys were passed along, if they were not return an error message
     if(!nin || !phoneNumber){
