@@ -42,7 +42,7 @@ router.post("/create",async (request,response)=>{
     const keys=['name','description','startDate','endDate'];
     // check and make sure all the keys are present
     for (let key of keys){
-        if (request.body[key] == undefined){
+        if (request.body[key] === undefined){
             return response.json({
                 status:"error",
                 message:`the key ${key} was absent, please enter it`

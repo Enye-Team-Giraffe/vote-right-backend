@@ -10,12 +10,14 @@ const app=express();
 
 // apply the middlewares
 app.use(cors());
-app.use(express.urlencoded({extended:false}))
-app.use(express.json())//enable us to be able to recieve json body from our app
+app.use(express.urlencoded({extended:false}));
+app.use(express.json());//enable us to be able to recieve json body from our app
 
 // import out routes
 const ninAuthenticateRoute=require("./routes/authentication");
-const adminRoute=require("./routes/election")
+const adminRoute=require("./routes/election");
+const candidateRoute=require("./routes/candidates");
+
 
 // a function to tell us our program works
 app.use("/test",(request,response)=>{
@@ -27,6 +29,9 @@ app.use("/authenticate",ninAuthenticateRoute);
 
 // a route for the admin section of our app
 app.use("/election",adminRoute);
+
+// route for dealing with candidates
+app.use("/candidate",candidateRoute)
 
 // deploy our instance
 exports.voteright=functions.https.onRequest(app);
