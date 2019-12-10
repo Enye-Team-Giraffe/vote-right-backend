@@ -8,6 +8,12 @@ var web3 = require("../web3/configuredWeb3");
 const largeGas=3000000;
 const smallGas=1000000;
 
+// this function converts a datetiem string into a  timestamp
+// 12/17/2019 => 1576537200
+function toTimestamp(dateString){
+    return Date.parse(dateString)/1000
+}
+
 // a route to get all the current elections in our blockchain
 router.get("/",async (request,response)=>{
     // wrap it in a try catch in case there are any errors
@@ -18,6 +24,7 @@ router.get("/",async (request,response)=>{
         const electionDetails = await  Promise.all(electionsLength.map((_,index)=>{
             return electionFactory.methods.summaries(index).call()
         }))
+        console.log("succesful")
         // if no error was encountered, then we can go on and return the details
         return response.json({
             status:"success",
@@ -25,6 +32,7 @@ router.get("/",async (request,response)=>{
         });
     }
     catch(err){
+        console.log(err.msg)
         // if any error was encountered return with the message
         return response.json({
             status:"error",
@@ -41,6 +49,8 @@ router.get("/",async (request,response)=>{
 router.post("/create",async (request,response)=>{
     // get a key of all the details of the election
     const keys=['name','description','startDate','endDate'];
+    request.body=JSON.parse(request.body)
+    console.log(request.body)
     // check and make sure all the keys are present
     for (let key of keys){
         if (request.body[key] === undefined){
@@ -54,8 +64,8 @@ router.post("/create",async (request,response)=>{
     body={};
     body['name'] = request.body['name']
     body['description'] = request.body['description']
-    body['startDate'] = request.body['startDate']
-    body['endDate'] = request.body['startDate']
+    body['startDate'] = toTimestamp(request.body['startDate'])
+    body['endDate'] = toTimestamp(request.body['startDate'])
 
     // create my election in the blockchain
     try{
